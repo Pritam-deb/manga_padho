@@ -149,6 +149,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  http:
+    dependency: "direct main"
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.5"
   http_parser:
     dependency: transitive
     description:
@@ -177,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  mangadex_library:
+    dependency: "direct main"
+    description:
+      name: mangadex_library
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.5"
   matcher:
     dependency: transitive
     description:

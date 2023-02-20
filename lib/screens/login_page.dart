@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:manga_padho/screens/forgot_pw.dart';
+//manga package
+import 'package:mangadex_library/mangadex_library.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback showRegisterPage;
@@ -137,8 +139,11 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       signIn();
+                      // var loginData = await login(
+                      //     _emailController.text, _passwordController.text);
+                      // print('LOGIN: $loginData');
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),

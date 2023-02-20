@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:manga_padho/widgets/horizontal_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,23 +15,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Signed in as ' + user.email!),
-          MaterialButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
-            color: Colors.red,
-            child: Text(
-              'Log out',
-              style: TextStyle(color: Colors.white),
+      body: SingleChildScrollView(
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RichText(
+              text: const TextSpan(
+                style: TextStyle(color: Colors.black, fontSize: 26),
+                children: [
+                  TextSpan(text: "What are you \nreading "),
+                  TextSpan(
+                    text: "today?",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
             ),
-          )
-        ],
-      )),
+            SizedBox(
+              height: 20,
+            ),
+            HorizontalScrollList(scrollTitle: 'Popular new titles'),
+            HorizontalScrollList(scrollTitle: 'Seasonal Manga'),
+            HorizontalScrollList(scrollTitle: 'Latest Uploads'),
+            Text('Signed in as ' + user.email!),
+            MaterialButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              color: Colors.red,
+              child: const Text(
+                'Log out',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
