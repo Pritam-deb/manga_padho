@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_model.dart';
 import 'package:mangadex_library/mangadex_library.dart' as lib;
 import 'package:http/http.dart' as http;
@@ -28,6 +29,22 @@ class HorizontalScrollList extends StatelessWidget {
       return manga;
     }
 
+    CoverModel cover;
+
+    Future<CoverModel> fetchRandomMangaCover() async {
+      // var unencodedPath = '/cover';
+      var response = await http.get(
+        Uri.http('api.mangadex.org', '/cover', {
+          'limit': 1.toString(),
+          'includes[]': ['manga']
+        }),
+      );
+      cover = CoverModel.fromJson(jsonDecode(response.body));
+      print("RESPONSE: ${cover.data}");
+
+      return cover;
+    }
+
     return Column(
       children: [
         RichText(
@@ -44,7 +61,7 @@ class HorizontalScrollList extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  fetchRandomManga();
+                  fetchRandomMangaCover();
                 },
                 child: Container(
                   height: 221,
