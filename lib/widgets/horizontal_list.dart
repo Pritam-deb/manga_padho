@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
+import 'package:manga_padho/screens/single_manga_page.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
 import 'package:mangadex_library/mangadex_library.dart' as lib;
 import 'package:http/http.dart' as http;
@@ -29,7 +30,7 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
   void CoverLink() async {
     CoverUrls = await manga_service.fetchRandomMangaCover();
     CoverUrls.forEach((element) async {
-      var name = await manga_service.getSingleMangaDetails(element[1]);
+      var name = await manga_service.getSingleMangaName(element[1]);
       manga_names.add(name);
       print('${manga_names}');
     });
@@ -75,40 +76,52 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      UnconstrainedBox(
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  'https://uploads.mangadex.org/covers/'
-                                          '${CoverUrls[index][1]}/' +
-                                      '${CoverUrls[index][0]}'),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SingleMangaScreen(
+                              mangaID: CoverUrls[index][1],
+                              coverFileName: CoverUrls[index][0]),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        UnconstrainedBox(
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    'https://uploads.mangadex.org/covers/'
+                                            '${CoverUrls[index][1]}/' +
+                                        '${CoverUrls[index][0]}'),
+                              ),
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(0, 10),
+                                  blurRadius: 33,
+                                  color: Colors.grey,
+                                )
+                              ],
                             ),
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0, 10),
-                                blurRadius: 33,
-                                color: Colors.grey,
-                              )
-                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 80,
-                        width: 150,
-                        child: Text(_isLoading == true
-                            ? 'Loading title'
-                            : manga_names[index]),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 80,
+                          width: 150,
+                          child: Text(_isLoading == true
+                              ? 'Loading title'
+                              : manga_names[index]),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }),

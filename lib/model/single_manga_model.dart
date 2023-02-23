@@ -60,18 +60,134 @@ class Data {
 class Relationships {
   String? id;
   String? type;
+  Attributes2? attributes;
 
-  Relationships({this.id, this.type});
+  Relationships({this.id, this.type, this.attributes});
 
   Relationships.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     type = json["type"];
+    attributes = json["attributes"] == null
+        ? null
+        : Attributes2.fromJson(json["attributes"]);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["type"] = type;
+    if (attributes != null) {
+      _data["attributes"] = attributes?.toJson();
+    }
+    return _data;
+  }
+}
+
+class Attributes2 {
+  String? name;
+  dynamic imageUrl;
+  Biography? biography;
+  String? twitter;
+  String? pixiv;
+  dynamic melonBook;
+  dynamic fanBox;
+  dynamic booth;
+  dynamic nicoVideo;
+  dynamic skeb;
+  dynamic fantia;
+  dynamic tumblr;
+  dynamic youtube;
+  dynamic weibo;
+  dynamic naver;
+  String? website;
+  String? createdAt;
+  String? updatedAt;
+  int? version;
+
+  Attributes2(
+      {this.name,
+      this.imageUrl,
+      this.biography,
+      this.twitter,
+      this.pixiv,
+      this.melonBook,
+      this.fanBox,
+      this.booth,
+      this.nicoVideo,
+      this.skeb,
+      this.fantia,
+      this.tumblr,
+      this.youtube,
+      this.weibo,
+      this.naver,
+      this.website,
+      this.createdAt,
+      this.updatedAt,
+      this.version});
+
+  Attributes2.fromJson(Map<String, dynamic> json) {
+    name = json["name"];
+    imageUrl = json["imageUrl"];
+    biography = json["biography"] == null
+        ? null
+        : Biography.fromJson(json["biography"]);
+    twitter = json["twitter"];
+    pixiv = json["pixiv"];
+    melonBook = json["melonBook"];
+    fanBox = json["fanBox"];
+    booth = json["booth"];
+    nicoVideo = json["nicoVideo"];
+    skeb = json["skeb"];
+    fantia = json["fantia"];
+    tumblr = json["tumblr"];
+    youtube = json["youtube"];
+    weibo = json["weibo"];
+    naver = json["naver"];
+    website = json["website"];
+    createdAt = json["createdAt"];
+    updatedAt = json["updatedAt"];
+    version = json["version"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["name"] = name;
+    _data["imageUrl"] = imageUrl;
+    if (biography != null) {
+      _data["biography"] = biography?.toJson();
+    }
+    _data["twitter"] = twitter;
+    _data["pixiv"] = pixiv;
+    _data["melonBook"] = melonBook;
+    _data["fanBox"] = fanBox;
+    _data["booth"] = booth;
+    _data["nicoVideo"] = nicoVideo;
+    _data["skeb"] = skeb;
+    _data["fantia"] = fantia;
+    _data["tumblr"] = tumblr;
+    _data["youtube"] = youtube;
+    _data["weibo"] = weibo;
+    _data["naver"] = naver;
+    _data["website"] = website;
+    _data["createdAt"] = createdAt;
+    _data["updatedAt"] = updatedAt;
+    _data["version"] = version;
+    return _data;
+  }
+}
+
+class Biography {
+  String? en;
+
+  Biography({this.en});
+
+  Biography.fromJson(Map<String, dynamic> json) {
+    en = json["en"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["en"] = en;
     return _data;
   }
 }
@@ -85,7 +201,7 @@ class Attributes {
   String? originalLanguage;
   String? lastVolume;
   String? lastChapter;
-  String? publicationDemographic;
+  dynamic publicationDemographic;
   String? status;
   int? year;
   String? contentRating;
@@ -95,8 +211,8 @@ class Attributes {
   String? createdAt;
   String? updatedAt;
   int? version;
-  List<String>? availableTranslatedLanguages;
-  String? latestUploadedChapter;
+  List<dynamic>? availableTranslatedLanguages;
+  dynamic latestUploadedChapter;
 
   Attributes(
       {this.title,
@@ -147,9 +263,7 @@ class Attributes {
     createdAt = json["createdAt"];
     updatedAt = json["updatedAt"];
     version = json["version"];
-    availableTranslatedLanguages = json["availableTranslatedLanguages"] == null
-        ? null
-        : List<String>.from(json["availableTranslatedLanguages"]);
+    availableTranslatedLanguages = json["availableTranslatedLanguages"] ?? [];
     latestUploadedChapter = json["latestUploadedChapter"];
   }
 
@@ -282,53 +396,16 @@ class Name {
 }
 
 class Links {
-  String? al;
-  String? ap;
-  String? bw;
-  String? kt;
-  String? mu;
-  String? amz;
-  String? cdj;
-  String? ebj;
-  String? mal;
   String? raw;
 
-  Links(
-      {this.al,
-      this.ap,
-      this.bw,
-      this.kt,
-      this.mu,
-      this.amz,
-      this.cdj,
-      this.ebj,
-      this.mal,
-      this.raw});
+  Links({this.raw});
 
   Links.fromJson(Map<String, dynamic> json) {
-    al = json["al"];
-    ap = json["ap"];
-    bw = json["bw"];
-    kt = json["kt"];
-    mu = json["mu"];
-    amz = json["amz"];
-    cdj = json["cdj"];
-    ebj = json["ebj"];
-    mal = json["mal"];
     raw = json["raw"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["al"] = al;
-    _data["ap"] = ap;
-    _data["bw"] = bw;
-    _data["kt"] = kt;
-    _data["mu"] = mu;
-    _data["amz"] = amz;
-    _data["cdj"] = cdj;
-    _data["ebj"] = ebj;
-    _data["mal"] = mal;
     _data["raw"] = raw;
     return _data;
   }
@@ -336,38 +413,35 @@ class Links {
 
 class Description {
   String? en;
-  String? ru;
-  String? esLa;
+  String? ja;
 
-  Description({this.en, this.ru, this.esLa});
+  Description({this.en, this.ja});
 
   Description.fromJson(Map<String, dynamic> json) {
     en = json["en"];
-    ru = json["ru"];
-    esLa = json["es-la"];
+    ja = json["ja"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["en"] = en;
-    _data["ru"] = ru;
-    _data["es-la"] = esLa;
+    _data["ja"] = ja;
     return _data;
   }
 }
 
 class AltTitles {
-  String? en;
+  String? ja;
 
-  AltTitles({this.en});
+  AltTitles({this.ja});
 
   AltTitles.fromJson(Map<String, dynamic> json) {
-    en = json["en"];
+    ja = json["ja"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["en"] = en;
+    _data["ja"] = ja;
     return _data;
   }
 }

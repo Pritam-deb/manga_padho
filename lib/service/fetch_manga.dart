@@ -40,7 +40,25 @@ class FetchManga {
     return fileAndId;
   }
 
-  Future<String> getSingleMangaDetails(String mangaID) async {
+  //get a single manga details
+
+  Future<SingleMangaModel> getSingleMangaDetails(String mangaID) async {
+    var response = await http.get(
+      Uri.http('api.mangadex.org', '/manga/$mangaID', {
+        'includes[]': 'author',
+        'includes[]': 'artist',
+        'includes[]': 'cover_art'
+      }),
+    );
+    singleManga =
+        SingleMangaModel.fromJson(jsonDecode(response.body.toString()));
+    // singleManga.data.attributes.title.en;
+    return singleManga;
+  }
+
+  //get the name of manga
+
+  Future<String> getSingleMangaName(String mangaID) async {
     var response = await http.get(
       Uri.http('api.mangadex.org', '/manga/${mangaID}'),
     );
