@@ -1,28 +1,14 @@
-class CoverModel {
+class SingleMangaModel {
   String? result;
   String? response;
-  List<Data>? data;
-  int? limit;
-  int? offset;
-  int? total;
+  Data? data;
 
-  CoverModel(
-      {this.result,
-      this.response,
-      this.data,
-      this.limit,
-      this.offset,
-      this.total});
+  SingleMangaModel({this.result, this.response, this.data});
 
-  CoverModel.fromJson(Map<String, dynamic> json) {
+  SingleMangaModel.fromJson(Map<String, dynamic> json) {
     result = json["result"];
     response = json["response"];
-    data = json["data"] == null
-        ? null
-        : (json["data"] as List).map((e) => Data.fromJson(e)).toList();
-    limit = json["limit"];
-    offset = json["offset"];
-    total = json["total"];
+    data = json["data"] == null ? null : Data.fromJson(json["data"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -30,11 +16,8 @@ class CoverModel {
     _data["result"] = result;
     _data["response"] = response;
     if (data != null) {
-      _data["data"] = data?.map((e) => e.toJson()).toList();
+      _data["data"] = data?.toJson();
     }
-    _data["limit"] = limit;
-    _data["offset"] = offset;
-    _data["total"] = total;
     return _data;
   }
 }
@@ -77,30 +60,23 @@ class Data {
 class Relationships {
   String? id;
   String? type;
-  Attributes1? attributes;
 
-  Relationships({this.id, this.type, this.attributes});
+  Relationships({this.id, this.type});
 
   Relationships.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     type = json["type"];
-    attributes = json["attributes"] == null
-        ? null
-        : Attributes1.fromJson(json["attributes"]);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["type"] = type;
-    if (attributes != null) {
-      _data["attributes"] = attributes?.toJson();
-    }
     return _data;
   }
 }
 
-class Attributes1 {
+class Attributes {
   Title? title;
   List<AltTitles>? altTitles;
   Description? description;
@@ -111,7 +87,7 @@ class Attributes1 {
   String? lastChapter;
   String? publicationDemographic;
   String? status;
-  dynamic year;
+  int? year;
   String? contentRating;
   List<Tags>? tags;
   String? state;
@@ -122,7 +98,7 @@ class Attributes1 {
   List<String>? availableTranslatedLanguages;
   String? latestUploadedChapter;
 
-  Attributes1(
+  Attributes(
       {this.title,
       this.altTitles,
       this.description,
@@ -144,7 +120,7 @@ class Attributes1 {
       this.availableTranslatedLanguages,
       this.latestUploadedChapter});
 
-  Attributes1.fromJson(Map<String, dynamic> json) {
+  Attributes.fromJson(Map<String, dynamic> json) {
     title = json["title"] == null ? null : Title.fromJson(json["title"]);
     altTitles = json["altTitles"] == null
         ? null
@@ -218,7 +194,7 @@ class Attributes1 {
 class Tags {
   String? id;
   String? type;
-  Attributes2? attributes;
+  Attributes1? attributes;
   List<dynamic>? relationships;
 
   Tags({this.id, this.type, this.attributes, this.relationships});
@@ -228,7 +204,7 @@ class Tags {
     type = json["type"];
     attributes = json["attributes"] == null
         ? null
-        : Attributes2.fromJson(json["attributes"]);
+        : Attributes1.fromJson(json["attributes"]);
     relationships = json["relationships"] ?? [];
   }
 
@@ -246,15 +222,15 @@ class Tags {
   }
 }
 
-class Attributes2 {
+class Attributes1 {
   Name? name;
   Description1? description;
   String? group;
   int? version;
 
-  Attributes2({this.name, this.description, this.group, this.version});
+  Attributes1({this.name, this.description, this.group, this.version});
 
-  Attributes2.fromJson(Map<String, dynamic> json) {
+  Attributes1.fromJson(Map<String, dynamic> json) {
     name = json["name"] == null ? null : Name.fromJson(json["name"]);
     description = json["description"] == null
         ? null
@@ -308,59 +284,90 @@ class Name {
 class Links {
   String? al;
   String? ap;
+  String? bw;
   String? kt;
   String? mu;
+  String? amz;
+  String? cdj;
+  String? ebj;
   String? mal;
+  String? raw;
 
-  Links({this.al, this.ap, this.kt, this.mu, this.mal});
+  Links(
+      {this.al,
+      this.ap,
+      this.bw,
+      this.kt,
+      this.mu,
+      this.amz,
+      this.cdj,
+      this.ebj,
+      this.mal,
+      this.raw});
 
   Links.fromJson(Map<String, dynamic> json) {
     al = json["al"];
     ap = json["ap"];
+    bw = json["bw"];
     kt = json["kt"];
     mu = json["mu"];
+    amz = json["amz"];
+    cdj = json["cdj"];
+    ebj = json["ebj"];
     mal = json["mal"];
+    raw = json["raw"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["al"] = al;
     _data["ap"] = ap;
+    _data["bw"] = bw;
     _data["kt"] = kt;
     _data["mu"] = mu;
+    _data["amz"] = amz;
+    _data["cdj"] = cdj;
+    _data["ebj"] = ebj;
     _data["mal"] = mal;
+    _data["raw"] = raw;
     return _data;
   }
 }
 
 class Description {
   String? en;
+  String? ru;
+  String? esLa;
 
-  Description({this.en});
+  Description({this.en, this.ru, this.esLa});
 
   Description.fromJson(Map<String, dynamic> json) {
+    en = json["en"];
+    ru = json["ru"];
+    esLa = json["es-la"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["en"] = en;
+    _data["ru"] = ru;
+    _data["es-la"] = esLa;
+    return _data;
+  }
+}
+
+class AltTitles {
+  String? en;
+
+  AltTitles({this.en});
+
+  AltTitles.fromJson(Map<String, dynamic> json) {
     en = json["en"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["en"] = en;
-    return _data;
-  }
-}
-
-class AltTitles {
-  String? de;
-
-  AltTitles({this.de});
-
-  AltTitles.fromJson(Map<String, dynamic> json) {
-    de = json["de"];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["de"] = de;
     return _data;
   }
 }
@@ -377,47 +384,6 @@ class Title {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["en"] = en;
-    return _data;
-  }
-}
-
-class Attributes {
-  String? description;
-  String? volume;
-  String? fileName;
-  String? locale;
-  String? createdAt;
-  String? updatedAt;
-  int? version;
-
-  Attributes(
-      {this.description,
-      this.volume,
-      this.fileName,
-      this.locale,
-      this.createdAt,
-      this.updatedAt,
-      this.version});
-
-  Attributes.fromJson(Map<String, dynamic> json) {
-    description = json["description"];
-    volume = json["volume"];
-    fileName = json["fileName"];
-    locale = json["locale"];
-    createdAt = json["createdAt"];
-    updatedAt = json["updatedAt"];
-    version = json["version"];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["description"] = description;
-    _data["volume"] = volume;
-    _data["fileName"] = fileName;
-    _data["locale"] = locale;
-    _data["createdAt"] = createdAt;
-    _data["updatedAt"] = updatedAt;
-    _data["version"] = version;
     return _data;
   }
 }

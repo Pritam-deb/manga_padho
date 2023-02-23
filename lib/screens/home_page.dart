@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
             ),
             HorizontalScrollList(scrollTitle: 'Popular new titles'),
             HorizontalScrollList(scrollTitle: 'Seasonal Manga'),
-            HorizontalScrollList(scrollTitle: 'Latest Uploads'),
+            // HorizontalScrollList(scrollTitle: 'Latest Uploads'),
             Text('Signed in as ' + user.email!),
             MaterialButton(
               onPressed: () {
