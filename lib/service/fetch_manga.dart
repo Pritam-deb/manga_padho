@@ -13,7 +13,8 @@ class FetchManga {
     var response = await http.get(
       Uri.http('api.mangadex.org', '/cover', {
         'limit': 4.toString(),
-        'includes[]': ['manga']
+        'includes[]': ['manga'],
+        'order': {"createdAt": "desc", "updatedAt": "desc", "volume": "desc"},
       }),
     );
   }
@@ -25,7 +26,8 @@ class FetchManga {
     var response = await http.get(
       Uri.http('api.mangadex.org', '/cover', {
         'limit': 4.toString(),
-        'includes[]': ['manga']
+        'includes[]': ['manga'],
+        // 'order': {"createdAt": "desc"},
       }),
     );
     print("HERE");

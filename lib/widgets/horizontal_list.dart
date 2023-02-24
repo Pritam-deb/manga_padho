@@ -77,13 +77,18 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      SingleMangaModel? mangaDetails = await manga_service
+                          .getSingleMangaDetails(CoverUrls[index][1]);
+                      ;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SingleMangaScreen(
-                              mangaID: CoverUrls[index][1],
-                              coverFileName: CoverUrls[index][0]),
+                            mangaID: CoverUrls[index][1],
+                            coverFileName: CoverUrls[index][0],
+                            mangaDetails: mangaDetails,
+                          ),
                         ),
                       );
                     },
@@ -113,13 +118,15 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 80,
-                          width: 150,
-                          child: Text(_isLoading == true
-                              ? 'Loading title'
-                              : manga_names[index]),
-                        ),
+                        // SizedBox(
+                        //   height: 80,
+                        //   width: 150,
+                        //   child: Text(_isLoading == true
+                        //       ? 'Loading title'
+                        //       : manga_names[index].isEmpty
+                        //           ? 'Unknown Title'
+                        //           : manga_names[index]),
+                        // ),
                       ],
                     ),
                   ),

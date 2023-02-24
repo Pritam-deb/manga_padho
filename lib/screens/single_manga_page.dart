@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
 
@@ -8,16 +9,21 @@ class SingleMangaScreen extends StatefulWidget {
     Key? key,
     required this.mangaID,
     required this.coverFileName,
+    this.mangaDetails,
   }) : super(key: key);
   final String mangaID;
   final String coverFileName;
+  final SingleMangaModel? mangaDetails;
 
   @override
   State<SingleMangaScreen> createState() => _SingleMangaScreenState();
 }
 
 class _SingleMangaScreenState extends State<SingleMangaScreen> {
-  late SingleMangaModel mangaDetails;
+  List<SingleMangaModel> favouriteManga = [];
+  // SingleMangaModel? mangaDetails;
+  final favourites = Hive.box('favourites');
+  // final MangaName = Hive.box('mangaName');
 
   final FetchManga mangaService = FetchManga();
   String? mangaName = '',
@@ -29,24 +35,32 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
   @override
   void initState() {
     fetchDetails();
-    setState(() {
-      mangaName;
-    });
+
+    print('TEMP GOT== $mangaName');
     super.initState();
   }
 
   void fetchDetails() async {
-    mangaDetails = await mangaService.getSingleMangaDetails(widget.mangaID);
-    mangaName = mangaDetails.data!.attributes!.title!.en;
-    mangaAuthor = mangaDetails.data!.relationships![0].attributes!.name;
-    // var x = mangaDetails.data!.relationships![0].attributes!.name;
+    // mangaDetails = await mangaService.getSingleMangaDetails(widget.mangaID);
+    mangaName = widget.mangaDetails?.data!.attributes!.title!.en;
+    mangaAuthor = widget.mangaDetails?.data!.relationships![0].attributes?.name;
+    // var x = widget.mangaDetails.data!.relationships![0].attributes!.name;
     // print("AUTHOR NAME==${x.toString()}");
-    mangaArtist = mangaDetails.data!.relationships![1].attributes!.name;
-    mangaState = mangaDetails.data!.attributes!.state;
-    mangaDesc = mangaDetails.data!.attributes!.description!.en;
-    print('MANGAname==>${mangaDetails.data!.attributes!.title!.en}');
+    // mangaArtist = widget.mangaDetails?.data!.relationships![1].attributes!.name;
+    // mangaState = widget.mangaDetails.data!.attributes!.state;
+    mangaDesc = widget.mangaDetails?.data!.attributes!.description!.en;
+    // print('MANGAname==>${widget.mangaDetails.data!.attributes!.title!.en}');
   }
 
+  void writeFavourite() {
+    favourites.add([
+      widget.mangaID,
+      widget.coverFileName,
+      widget.mangaDetails?.data!.attributes!.title!.en
+    ]);
+  }
+
+  bool isFav = false;
   @override
   Widget build(BuildContext context) {
     // print('');
@@ -96,10 +110,24 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                           color: Colors.purple,
                           borderRadius: BorderRadius.circular(10)),
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              isFav = true;
+                            });
+                            print('PRESSED');
+                            // favouriteManga.add(widget.mangaID);
+                            SnackBar(
+                              content: Text('Added to favourites'),
+                            );
+                            if (isFav) {
+                              writeFavourite();
+                            } else {
+                              favourites.deleteAt(index);
+                            }
+                          },
                           icon: Icon(
                             Icons.favorite,
-                            color: Colors.white,
+                            color: isFav ? Colors.red : Colors.white,
                             size: 35,
                           )),
                     ),
