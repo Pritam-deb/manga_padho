@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:manga_padho/model/cover_model.dart';
+import 'package:manga_padho/model/searched_manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 
 class FetchManga {
   late CoverModel cover;
   late SingleMangaModel singleManga;
+  late SearchedMangaModel searchedManga;
 
   //get a list of Manga given the parameters
   void fetchMangaList() async {
@@ -70,5 +72,22 @@ class FetchManga {
         singleManga.data!.attributes!.title!.en ?? "Unknown Title";
     // singleManga.data.attributes.title.en;
     return manga_name;
+  }
+
+  Future<SearchedMangaModel> searchManga(String mangaName) async {
+    print('the name to search $mangaName');
+
+    var response = await http.get(
+      Uri.http('api.mangadex.org', '/manga/', {
+        'title': mangaName,
+        'includes[]': 'author',
+        'includes[]': 'artist',
+        'includes[]': 'cover_art'
+      }),
+    );
+    searchedManga =
+        SearchedMangaModel.fromJson(jsonDecode(response.body.toString()));
+    print('The manga received is===>${searchedManga.data![0].id}');
+    return searchedManga;
   }
 }

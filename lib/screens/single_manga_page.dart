@@ -119,11 +119,11 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                             SnackBar(
                               content: Text('Added to favourites'),
                             );
-                            if (isFav) {
-                              writeFavourite();
-                            } else {
-                              favourites.deleteAt(index);
-                            }
+                            // if (isFav) {
+                            //   writeFavourite();
+                            // } else {
+                            //   favourites.deleteAt(index);
+                            // }
                           },
                           icon: Icon(
                             Icons.favorite,

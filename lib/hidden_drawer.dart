@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:manga_padho/screens/home_page.dart';
 import 'package:manga_padho/screens/favourties_page.dart';
+import 'package:manga_padho/screens/search_page.dart';
 
 class HiddenDrawer extends StatefulWidget {
   const HiddenDrawer({super.key});
@@ -19,7 +20,7 @@ class _HiddenDrawerState extends State<HiddenDrawer> {
     _pages = [
       ScreenHiddenDrawer(
         ItemHiddenMenu(
-          name: 'Home Page',
+          name: 'HomePage',
           baseStyle: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -29,6 +30,19 @@ class _HiddenDrawerState extends State<HiddenDrawer> {
           colorLineSelected: Colors.deepOrange,
         ),
         HomePage(),
+      ),
+      ScreenHiddenDrawer(
+        ItemHiddenMenu(
+          name: 'Seach Page',
+          baseStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+          selectedStyle: TextStyle(),
+          colorLineSelected: Colors.deepOrange,
+        ),
+        SearchPage(),
       ),
       ScreenHiddenDrawer(
         ItemHiddenMenu(

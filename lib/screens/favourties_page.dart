@@ -13,6 +13,7 @@ class FavouritesPage extends StatefulWidget {
 class _FavouritesPageState extends State<FavouritesPage> {
   // final favouritesName = Hive.box('mangaName');
   final favourite = Hive.box('favourites');
+  final FetchManga manga_service = new FetchManga();
   // late SingleMangaModel mangaDetails;
   // final FetchManga mangaService = FetchManga();
   // String? mangaName = '', coverID = '';
@@ -51,10 +52,29 @@ class _FavouritesPageState extends State<FavouritesPage> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    title: Text(
-                      fav[2] ?? "loading",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    title: GestureDetector(
+                      //TAPPING HERE WILL LEAD TO THE PAGE OF THIS MANGA
+
+                      // onTap: () async {
+                      //   SingleMangaModel? mangaDetails = await manga_service
+                      //       .getSingleMangaDetails(CoverUrls[index][1]);
+                      //   ;
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => SingleMangaScreen(
+                      //         mangaID: CoverUrls[index][1],
+                      //         coverFileName: CoverUrls[index][0],
+                      //         mangaDetails: mangaDetails,
+                      //       ),
+                      //     ),
+                      //   );
+                      // },
+                      child: Text(
+                        fav[2] ?? "loading",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     trailing: IconButton(
                         onPressed: () {
