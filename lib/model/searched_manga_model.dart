@@ -77,18 +77,66 @@ class Data {
 class Relationships {
   String? id;
   String? type;
+  Attributes2? attributes;
 
-  Relationships({this.id, this.type});
+  Relationships({this.id, this.type, this.attributes});
 
   Relationships.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     type = json["type"];
+    attributes = json["attributes"] == null
+        ? null
+        : Attributes2.fromJson(json["attributes"]);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
     _data["type"] = type;
+    if (attributes != null) {
+      _data["attributes"] = attributes?.toJson();
+    }
+    return _data;
+  }
+}
+
+class Attributes2 {
+  String? description;
+  String? volume;
+  String? fileName;
+  String? locale;
+  String? createdAt;
+  String? updatedAt;
+  int? version;
+
+  Attributes2(
+      {this.description,
+      this.volume,
+      this.fileName,
+      this.locale,
+      this.createdAt,
+      this.updatedAt,
+      this.version});
+
+  Attributes2.fromJson(Map<String, dynamic> json) {
+    description = json["description"];
+    volume = json["volume"];
+    fileName = json["fileName"];
+    locale = json["locale"];
+    createdAt = json["createdAt"];
+    updatedAt = json["updatedAt"];
+    version = json["version"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["description"] = description;
+    _data["volume"] = volume;
+    _data["fileName"] = fileName;
+    _data["locale"] = locale;
+    _data["createdAt"] = createdAt;
+    _data["updatedAt"] = updatedAt;
+    _data["version"] = version;
     return _data;
   }
 }
