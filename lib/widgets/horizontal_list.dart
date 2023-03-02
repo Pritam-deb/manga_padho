@@ -1,17 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:mangadex_library/mangadex_library.dart' as lib;
+
 import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/screens/single_manga_page.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
-import 'package:mangadex_library/mangadex_library.dart' as lib;
-import 'package:http/http.dart' as http;
 
 class HorizontalScrollList extends StatefulWidget {
-  const HorizontalScrollList({super.key, required this.scrollTitle});
+  const HorizontalScrollList(
+      {Key? key, required this.scrollTitle, required this.demographic})
+      : super(key: key);
+  final String demographic;
   final String scrollTitle;
 
   @override
@@ -19,31 +24,21 @@ class HorizontalScrollList extends StatefulWidget {
 }
 
 class _HorizontalScrollListState extends State<HorizontalScrollList> {
-  List<List<String>> CoverUrls = [];
-  List<String> manga_names = [];
+  List<List<String?>> mangaList = [];
+  // List<String> manga_names = [];
   bool _isLoading = true;
 
-  var mangaList;
+  // var mangaList;
   late MangaModel manga;
   String link = '';
   final FetchManga manga_service = new FetchManga();
   void CoverLink() async {
-    CoverUrls = await manga_service.fetchRandomMangaCover();
-    CoverUrls.forEach((element) async {
-      var name = await manga_service.getSingleMangaName(element[1]);
-      manga_names.add(name);
-      print('${manga_names}');
-    });
-    Timer(Duration(seconds: 3), () {
-      setState(() {
-        _isLoading = false;
-      });
-      print('FOR MANGA===$manga_names');
-    });
+    mangaList =
+        await manga_service.fetchTrendingManga(demographic: widget.demographic);
     setState(() {
-      CoverUrls;
+      mangaList;
     });
-    print('$CoverUrls');
+    print('$mangaList');
   }
 
   @override
@@ -72,21 +67,21 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
-              itemCount: CoverUrls.length,
+              itemCount: mangaList.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () async {
                       SingleMangaModel? mangaDetails = await manga_service
-                          .getSingleMangaDetails(CoverUrls[index][1]);
+                          .getSingleMangaDetails(mangaList[index][1]!);
                       ;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SingleMangaScreen(
-                            mangaID: CoverUrls[index][1],
-                            coverFileName: CoverUrls[index][0],
+                            mangaID: mangaList[index][1]!,
+                            coverFileName: mangaList[index][0]!,
                             mangaDetails: mangaDetails,
                           ),
                         ),
@@ -103,8 +98,8 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                                 fit: BoxFit.cover,
                                 image: NetworkImage(
                                     'https://uploads.mangadex.org/covers/'
-                                            '${CoverUrls[index][1]}/' +
-                                        '${CoverUrls[index][0]}'),
+                                            '${mangaList[index][1]}/' +
+                                        '${mangaList[index][0]}'),
                               ),
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(30),
@@ -118,15 +113,13 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   height: 80,
-                        //   width: 150,
-                        //   child: Text(_isLoading == true
-                        //       ? 'Loading title'
-                        //       : manga_names[index].isEmpty
-                        //           ? 'Unknown Title'
-                        //           : manga_names[index]),
-                        // ),
+                        SizedBox(
+                          height: 80,
+                          width: 150,
+                          child: Text(mangaList[index].isEmpty
+                              ? 'Unknown Title'
+                              : mangaList[index][2].toString()),
+                        ),
                       ],
                     ),
                   ),

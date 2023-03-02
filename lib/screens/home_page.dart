@@ -45,8 +45,14 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 20,
             ),
-            HorizontalScrollList(scrollTitle: 'Popular new titles'),
-            HorizontalScrollList(scrollTitle: 'Seasonal Manga'),
+            HorizontalScrollList(
+              scrollTitle: 'High-rated titles',
+              demographic: 'seinen',
+            ),
+            HorizontalScrollList(
+              scrollTitle: 'Shounen Manga',
+              demographic: 'shounen',
+            ),
             // HorizontalScrollList(scrollTitle: 'Latest Uploads'),
             Text('Signed in as ' + user.email!),
             MaterialButton(

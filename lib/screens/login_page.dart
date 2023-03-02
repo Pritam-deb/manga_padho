@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:manga_padho/screens/forgot_pw.dart';
 //manga package
-import 'package:mangadex_library/mangadex_library.dart';
+import 'package:mangadex_library/mangadex_library.dart' as lib;
 
 class LoginPage extends StatefulWidget {
   final VoidCallback showRegisterPage;
@@ -17,6 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   Future signIn() async {
     showDialog(
         context: context,
@@ -25,6 +26,9 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
+    // var loginData = await lib.login('unscrambled_egg', 'rapdevil666');
+    // var token = loginData.token;
+    // print('LOGIN:=====> $token');
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());

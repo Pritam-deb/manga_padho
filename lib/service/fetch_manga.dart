@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:manga_padho/model/cover_model.dart';
+import 'package:manga_padho/model/manga_list_model.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 
@@ -9,6 +10,7 @@ class FetchManga {
   late CoverModel cover;
   late SingleMangaModel singleManga;
   late SearchedMangaModel searchedManga;
+  late SuggestedMangaModel listManga;
 
   //get a list of Manga given the parameters
   void fetchMangaList() async {
@@ -40,10 +42,43 @@ class FetchManga {
       List<String> array = [filename, id];
       fileAndId.add(array);
     });
-    // print('The List of items are:${fileAndId} ');
     return fileAndId;
   }
 
+  Future<List<List<String?>>> fetchTrendingManga({String? demographic}) async {
+    // var unencodedPath = '/cover';
+    List<List<String?>> fileAndId = [];
+    var response = await http.get(
+      Uri.http('api.mangadex.org', '/manga', {
+        'limit': 5.toString(),
+        'publicationDemographic[]': [demographic],
+        'contentRating[]': ['suggestive'],
+        'includes[]': ['cover_art'],
+        'order[rating]': ['desc'],
+      }),
+    );
+    print("MANGA HERE");
+    listManga =
+        SuggestedMangaModel.fromJson(jsonDecode(response.body.toString()));
+
+    listManga.data?.forEach((datum) {
+      String? fileName;
+      //for the cover name
+      var relations = datum.relationships;
+      relations?.forEach((element) {
+        if (element.type == 'cover_art') {
+          fileName = element.attributes?.fileName;
+        }
+      });
+      //-------
+      String? mangaName = datum.attributes!.title!.en.toString();
+      String id = datum.id!;
+      List<String?> array = [fileName, id, mangaName];
+      fileAndId.add(array);
+    });
+    // print('The List of items are:${fileAndId} ');
+    return fileAndId;
+  }
   //get a single manga details
 
   Future<SingleMangaModel> getSingleMangaDetails(String mangaID) async {
