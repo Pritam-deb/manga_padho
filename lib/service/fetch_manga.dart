@@ -5,6 +5,7 @@ import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_list_model.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
+import 'package:manga_padho/utils/constants.dart';
 
 class FetchManga {
   late CoverModel cover;
@@ -15,7 +16,7 @@ class FetchManga {
   //get a list of Manga given the parameters
   void fetchMangaList() async {
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/cover', {
+      Uri.http(MixedConstants.BASE_URL, '/cover', {
         'limit': 4.toString(),
         'includes[]': ['manga'],
         'order': {"createdAt": "desc", "updatedAt": "desc", "volume": "desc"},
@@ -28,7 +29,7 @@ class FetchManga {
     // var unencodedPath = '/cover';
     List<List<String>> fileAndId = [];
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/cover', {
+      Uri.http(MixedConstants.BASE_URL, '/cover', {
         'limit': 4.toString(),
         'includes[]': ['manga'],
         // 'order': {"createdAt": "desc"},
@@ -49,7 +50,7 @@ class FetchManga {
     // var unencodedPath = '/cover';
     List<List<String?>> fileAndId = [];
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/manga', {
+      Uri.http(MixedConstants.BASE_URL, '/manga', {
         'limit': 5.toString(),
         'publicationDemographic[]': [demographic],
         'contentRating[]': ['suggestive'],
@@ -83,7 +84,7 @@ class FetchManga {
 
   Future<SingleMangaModel> getSingleMangaDetails(String mangaID) async {
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/manga/$mangaID', {
+      Uri.http(MixedConstants.BASE_URL, '/manga/$mangaID', {
         'includes[]': 'author',
         'includes[]': 'artist',
         'includes[]': 'cover_art'
@@ -99,7 +100,7 @@ class FetchManga {
 
   Future<String> getSingleMangaName(String mangaID) async {
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/manga/${mangaID}'),
+      Uri.http(MixedConstants.BASE_URL, '/manga/${mangaID}'),
     );
     singleManga =
         SingleMangaModel.fromJson(jsonDecode(response.body.toString()));
@@ -113,7 +114,7 @@ class FetchManga {
     print('the name to search $mangaName');
 
     var response = await http.get(
-      Uri.http('api.mangadex.org', '/manga/', {
+      Uri.http(MixedConstants.BASE_URL, '/manga/', {
         'title': mangaName,
         'includes[]': 'author',
         'includes[]': 'artist',

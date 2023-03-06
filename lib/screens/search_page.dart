@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
 
 import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/utils/colors.dart';
+import 'package:manga_padho/utils/constants.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,7 +18,6 @@ class _SearchPageState extends State<SearchPage> {
   String? mangaID = '', coverFile = '';
   final TextEditingController _searchController = TextEditingController();
   final FetchManga manga_service = new FetchManga();
-  String baseURL = 'https://uploads.mangadex.org/covers/';
   String mangaName = '';
 
   @override
@@ -55,9 +56,9 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: <Color>[
-                          Color.fromARGB(255, 161, 13, 13),
-                          Color.fromARGB(255, 210, 25, 25),
-                          Color.fromARGB(255, 245, 66, 66),
+                          CustomColors.darkestRed,
+                          CustomColors.darkerRed,
+                          CustomColors.redColor,
                         ],
                       ),
                     ),
@@ -107,7 +108,8 @@ class _SearchPageState extends State<SearchPage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage('$baseURL$mangaID/$coverFile'),
+                            image: NetworkImage(
+                                '${MixedConstants.COVER_URL}$mangaID/$coverFile'),
                           ),
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(30),
