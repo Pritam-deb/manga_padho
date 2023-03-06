@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:manga_padho/utils/constants.dart';
 import 'package:mangadex_library/mangadex_library.dart' as lib;
 
 import 'package:manga_padho/model/cover_model.dart';
@@ -25,10 +26,8 @@ class HorizontalScrollList extends StatefulWidget {
 
 class _HorizontalScrollListState extends State<HorizontalScrollList> {
   List<List<String?>> mangaList = [];
-  // List<String> manga_names = [];
   bool _isLoading = true;
 
-  // var mangaList;
   late MangaModel manga;
   String link = '';
   final FetchManga manga_service = new FetchManga();
@@ -46,7 +45,6 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       CoverLink();
     });
-    // print('RES==$coverUrl');
     super.initState();
   }
 
@@ -75,7 +73,6 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                     onTap: () async {
                       SingleMangaModel? mangaDetails = await manga_service
                           .getSingleMangaDetails(mangaList[index][1]!);
-                      ;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -97,9 +94,7 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: NetworkImage(
-                                    'https://uploads.mangadex.org/covers/'
-                                            '${mangaList[index][1]}/' +
-                                        '${mangaList[index][0]}'),
+                                    '${MixedConstants.COVER_URL}${mangaList[index][1]}/${mangaList[index][0]}'),
                               ),
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(30),
@@ -126,78 +121,6 @@ class _HorizontalScrollListState extends State<HorizontalScrollList> {
                 );
               }),
         ),
-        // SingleChildScrollView(
-        //   scrollDirection: Axis.horizontal,
-        //   child: Row(
-        //     children: [
-
-        //       Container(
-        //         height: 221,
-        //         width: 200,
-        //         decoration: BoxDecoration(
-        //           // image: DecorationImage(
-        //           //   fit: BoxFit.cover,
-        //           //   image: NetworkImage(link),
-        //           // ),
-        //           color: Colors.red,
-        //           borderRadius: BorderRadius.circular(30),
-        //           boxShadow: [
-        //             BoxShadow(
-        //               offset: Offset(0, 10),
-        //               blurRadius: 33,
-        //               color: Colors.grey,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Container(
-        //         height: 221,
-        //         width: 200,
-        //         decoration: BoxDecoration(
-        //           color: Colors.blue,
-        //           borderRadius: BorderRadius.circular(30),
-        //           boxShadow: [
-        //             BoxShadow(
-        //               offset: Offset(0, 10),
-        //               blurRadius: 33,
-        //               color: Colors.grey,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Container(
-        //         height: 221,
-        //         width: 200,
-        //         decoration: BoxDecoration(
-        //           color: Colors.red,
-        //           borderRadius: BorderRadius.circular(30),
-        //           boxShadow: [
-        //             BoxShadow(
-        //               offset: Offset(0, 10),
-        //               blurRadius: 33,
-        //               color: Colors.grey,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //       Container(
-        //         height: 221,
-        //         width: 200,
-        //         decoration: BoxDecoration(
-        //           color: Colors.blue,
-        //           borderRadius: BorderRadius.circular(30),
-        //           boxShadow: [
-        //             BoxShadow(
-        //               offset: Offset(0, 10),
-        //               blurRadius: 33,
-        //               color: Colors.grey,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }

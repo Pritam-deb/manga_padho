@@ -26,9 +26,7 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
-    // var loginData = await lib.login('unscrambled_egg', 'rapdevil666');
-    // var token = loginData.token;
-    // print('LOGIN:=====> $token');
+
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim());
@@ -145,9 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: GestureDetector(
                     onTap: () async {
                       signIn();
-                      // var loginData = await login(
-                      //     _emailController.text, _passwordController.text);
-                      // print('LOGIN: $loginData');
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),

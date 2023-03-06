@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/utils/constants.dart';
 
 class SingleMangaScreen extends StatefulWidget {
   const SingleMangaScreen({
@@ -21,9 +22,8 @@ class SingleMangaScreen extends StatefulWidget {
 
 class _SingleMangaScreenState extends State<SingleMangaScreen> {
   List<SingleMangaModel> favouriteManga = [];
-  // SingleMangaModel? mangaDetails;
+
   final favourites = Hive.box('favourites');
-  // final MangaName = Hive.box('mangaName');
 
   final FetchManga mangaService = FetchManga();
   String? mangaName = '',
@@ -41,15 +41,9 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
   }
 
   void fetchDetails() async {
-    // mangaDetails = await mangaService.getSingleMangaDetails(widget.mangaID);
     mangaName = widget.mangaDetails?.data!.attributes!.title!.en;
     mangaAuthor = widget.mangaDetails?.data!.relationships![0].attributes?.name;
-    // var x = widget.mangaDetails.data!.relationships![0].attributes!.name;
-    // print("AUTHOR NAME==${x.toString()}");
-    // mangaArtist = widget.mangaDetails?.data!.relationships![1].attributes!.name;
-    // mangaState = widget.mangaDetails.data!.attributes!.state;
     mangaDesc = widget.mangaDetails?.data!.attributes!.description!.en;
-    // print('MANGAname==>${widget.mangaDetails.data!.attributes!.title!.en}');
   }
 
   void writeFavourite() {
@@ -63,7 +57,6 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
   bool isFav = false;
   @override
   Widget build(BuildContext context) {
-    // print('');
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -83,26 +76,21 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
               children: [
                 Column(
                   children: [
-                    Text(
-                      mangaAuthor ?? 'Author',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                    Mangainfo(
+                      mangaInformation: mangaAuthor,
+                      placeholderText: 'Author',
                     ),
-                    Text(
-                      mangaArtist ?? 'loading',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                    Mangainfo(
+                      mangaInformation: mangaArtist,
+                      placeholderText: 'Artist',
                     ),
-                    Text(
-                      mangaState ?? 'on-going',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                    Mangainfo(
+                      mangaInformation: mangaState,
+                      placeholderText: 'State',
                     ),
-                    Text(
-                      '✰Rating',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
-                    ),
+
+                    // Mangainfo(mangaInformation: mangaRating, placeholderText: 'Rating',),
+
                     Container(
                       height: 60,
                       width: 60,
@@ -115,15 +103,6 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                               isFav = true;
                             });
                             print('PRESSED');
-                            // favouriteManga.add(widget.mangaID);
-                            SnackBar(
-                              content: Text('Added to favourites'),
-                            );
-                            // if (isFav) {
-                            //   writeFavourite();
-                            // } else {
-                            //   favourites.deleteAt(index);
-                            // }
                           },
                           icon: Icon(
                             Icons.favorite,
@@ -139,19 +118,11 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage('https://uploads.mangadex.org/covers/'
-                              '${widget.mangaID}/' +
-                          '${widget.coverFileName}'),
+                      image: NetworkImage(
+                          '${MixedConstants.COVER_URL}${widget.mangaID}/${widget.coverFileName}'),
                     ),
                     color: Colors.grey,
                     borderRadius: BorderRadius.circular(15),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     offset: Offset(0, 10),
-                    //     blurRadius: 33,
-                    //     color: Colors.grey,
-                    //   )
-                    // ],
                   ),
                 )
               ],
@@ -199,6 +170,25 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Mangainfo extends StatelessWidget {
+  const Mangainfo({
+    super.key,
+    required this.mangaInformation,
+    this.placeholderText,
+  });
+
+  final String? mangaInformation;
+  final String? placeholderText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      mangaInformation ?? 'Author',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
     );
   }
 }

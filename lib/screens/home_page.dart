@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             RichText(
               text: const TextSpan(
@@ -53,7 +52,6 @@ class _HomePageState extends State<HomePage> {
               scrollTitle: 'Shounen Manga',
               demographic: 'shounen',
             ),
-            // HorizontalScrollList(scrollTitle: 'Latest Uploads'),
             Text('Signed in as ' + user.email!),
             MaterialButton(
               onPressed: () {
