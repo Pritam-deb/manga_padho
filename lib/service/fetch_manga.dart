@@ -32,7 +32,7 @@ class FetchManga {
 
     var response = await http.get(
       Uri.http(MixedConstants.BASE_URL, '/manga/$mangaID/feed', {
-        'limit': 100.toString(),
+        'limit': 40.toString(),
         'translatedLanguage[]': 'en',
         'order[volume]': 'asc',
         'order[chapter]': 'asc'

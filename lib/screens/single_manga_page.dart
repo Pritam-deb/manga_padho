@@ -51,7 +51,7 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
     // chaptersInfo = chaptersInfo.removeLast();
     setState(() {
       chaptersInfo;
-      totalChapters;
+      // totalChapters;
     });
   }
 
@@ -176,11 +176,8 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                     Text('Date of upload'),
                     ListView.builder(
                       shrinkWrap: true,
-                      itemCount: totalChapters,
+                      itemCount: chaptersInfo!.length,
                       itemBuilder: (context, index) {
-                        // if (chaptersInfo != null) {
-                        //   List<String>? chapters = chaptersInfo?.removeLast();
-                        // } else {}
                         return Row(
                           children: [
                             Text("Chapter ${chaptersInfo?[index][3]}"),
