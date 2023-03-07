@@ -22,6 +22,8 @@ class SingleMangaScreen extends StatefulWidget {
 
 class _SingleMangaScreenState extends State<SingleMangaScreen> {
   List<SingleMangaModel> favouriteManga = [];
+  List<List<String>>? chaptersInfo;
+  var totalChapters;
 
   final favourites = Hive.box('favourites');
 
@@ -44,6 +46,13 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
     mangaName = widget.mangaDetails?.data!.attributes!.title!.en;
     mangaAuthor = widget.mangaDetails?.data!.relationships![0].attributes?.name;
     mangaDesc = widget.mangaDetails?.data!.attributes!.description!.en;
+    chaptersInfo = await mangaService.fetchChapterList(widget.mangaID);
+    totalChapters = chaptersInfo?.last[0];
+    // chaptersInfo = chaptersInfo.removeLast();
+    setState(() {
+      chaptersInfo;
+      totalChapters;
+    });
   }
 
   void writeFavourite() {
@@ -148,7 +157,9 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
               height: 15,
             ),
             Text(
-              'Number of chapters',
+              chaptersInfo != null
+                  ? 'Number of chapters are ${totalChapters}'
+                  : 'null',
               style: TextStyle(color: Colors.black, fontSize: 24),
             ),
             ListView(
@@ -163,6 +174,21 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     Text('Date of upload'),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: totalChapters,
+                      itemBuilder: (context, index) {
+                        // if (chaptersInfo != null) {
+                        //   List<String>? chapters = chaptersInfo?.removeLast();
+                        // } else {}
+                        return Row(
+                          children: [
+                            Text("Chapter ${chaptersInfo?[index][3]}"),
+                            Text("${chaptersInfo?[index][1]}")
+                          ],
+                        );
+                      },
+                    )
                   ],
                 )
               ],

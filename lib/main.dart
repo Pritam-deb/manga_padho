@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:manga_padho/screens/main_page.dart';
@@ -17,13 +18,15 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('favourites');
   // await Hive.openBox('mangaName');
-  runApp(MaterialApp(
-    title: 'Project App',
-    theme: ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+  runApp(ProviderScope(
+    child: MaterialApp(
+      title: 'Project App',
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+      ),
+      debugShowCheckedModeBanner: false,
+      home: MainPage(),
     ),
-    debugShowCheckedModeBanner: false,
-    home: MainPage(),
   ));
 }

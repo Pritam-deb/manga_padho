@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:http/http.dart' as http;
+import 'package:manga_padho/model/chapter_model.dart';
 import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_list_model.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
@@ -12,6 +14,7 @@ class FetchManga {
   late SingleMangaModel singleManga;
   late SearchedMangaModel searchedManga;
   late SuggestedMangaModel listManga;
+  late ChapterModel chapterList;
 
   //get a list of Manga given the parameters
   void fetchMangaList() async {
@@ -22,6 +25,34 @@ class FetchManga {
         'order': {"createdAt": "desc", "updatedAt": "desc", "volume": "desc"},
       }),
     );
+  }
+
+  Future<List<List<String>>> fetchChapterList(String mangaID) async {
+    List<List<String>> chapters = [];
+
+    var response = await http.get(
+      Uri.http(MixedConstants.BASE_URL, '/manga/$mangaID/feed', {
+        'limit': 100.toString(),
+        'translatedLanguage[]': 'en',
+        'order[volume]': 'asc',
+        'order[chapter]': 'asc'
+      }),
+    );
+    chapterList = ChapterModel.fromJson(jsonDecode(response.body.toString()));
+    chapterList.data?.forEach(
+      (element) {
+        String chapterID = element.id!;
+        String title = element.attributes!.title!;
+        String volume = element.attributes!.volume!;
+        String chapter = element.attributes!.chapter!;
+        List<String> array = [chapterID, title, volume, chapter];
+        chapters.add(array);
+      },
+    );
+    chapters.add([chapterList.total.toString()]);
+    // print('The chapters are====> ${chapterList.total}');
+
+    return chapters;
   }
 
   //get a list of covers of random manga
