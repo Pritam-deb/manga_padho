@@ -1,11 +1,33 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:manga_padho/model/fav_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/service/notifiers/favourites_notifier.dart';
 import 'package:manga_padho/utils/constants.dart';
 
-class SingleMangaScreen extends StatefulWidget {
+// class SingleMangaScreen extends ConsumerStatefulWidget {
+//   const SingleMangaScreen({
+//     Key? key,
+//     required this.mangaID,
+//     required this.coverFileName,
+//     this.mangaDetails,
+//   }) : super(key: key);
+//   final String mangaID;
+//   final String coverFileName;
+//   final SingleMangaModel? mangaDetails;
+
+//   @override
+//   ConsumerState createState() => _SingleMangaScreenState();
+// }
+
+// class _SingleMangaScreenState extends ConsumerState {
+
+// }
+
+class SingleMangaScreen extends ConsumerStatefulWidget {
   const SingleMangaScreen({
     Key? key,
     required this.mangaID,
@@ -17,10 +39,11 @@ class SingleMangaScreen extends StatefulWidget {
   final SingleMangaModel? mangaDetails;
 
   @override
-  State<SingleMangaScreen> createState() => _SingleMangaScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SingleMangaScreenState();
 }
 
-class _SingleMangaScreenState extends State<SingleMangaScreen> {
+class _SingleMangaScreenState extends ConsumerState<SingleMangaScreen> {
   List<SingleMangaModel> favouriteManga = [];
   List<List<String>>? chaptersInfo;
   var totalChapters;
@@ -33,11 +56,12 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
       mangaArtist = '',
       mangaState = '',
       mangaDesc = '';
+  bool isFav = false;
 
   @override
   void initState() {
     fetchDetails();
-
+    isFav = favourites.get(widget.mangaID) == null ? false : true;
     print('TEMP GOT== $mangaName');
     super.initState();
   }
@@ -46,7 +70,7 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
     mangaName = widget.mangaDetails?.data!.attributes!.title!.en;
     mangaAuthor = widget.mangaDetails?.data!.relationships![0].attributes?.name;
     mangaDesc = widget.mangaDetails?.data!.attributes!.description!.en;
-    chaptersInfo = await mangaService.fetchChapterList(widget.mangaID);
+    // chaptersInfo = await mangaService.fetchChapterList(widget.mangaID);
     totalChapters = chaptersInfo?.last[0];
     // chaptersInfo = chaptersInfo.removeLast();
     setState(() {
@@ -55,15 +79,22 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
     });
   }
 
-  void writeFavourite() {
-    favourites.add([
-      widget.mangaID,
-      widget.coverFileName,
-      widget.mangaDetails?.data!.attributes!.title!.en
-    ]);
+  final FavouritesProvider =
+      NotifierProvider<FavouriteNotifier, List<FavModel>>(() {
+    return FavouriteNotifier();
+  });
+
+  bool checkFav(List<FavModel> listFav, FavModel favourite) {
+    bool isPresent = false;
+    for (final model in listFav) {
+      if (model.mangaID == favourite.mangaID) {
+        isPresent = true;
+      }
+      print("IS PRESENT $isPresent");
+    }
+    return isPresent;
   }
 
-  bool isFav = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,24 +132,43 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                     // Mangainfo(mangaInformation: mangaRating, placeholderText: 'Rating',),
 
                     Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isFav = true;
-                            });
-                            print('PRESSED');
-                          },
-                          icon: Icon(
-                            Icons.favorite,
-                            color: isFav ? Colors.red : Colors.white,
-                            size: 35,
-                          )),
-                    ),
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: IconButton(
+                            onPressed: () {
+                              FavModel favManga = FavModel(
+                                  mangaID: widget.mangaID,
+                                  coverFileName: widget.coverFileName,
+                                  mangaName: mangaName!);
+                              var listOfFav = ref.watch(FavouritesProvider);
+                              if (checkFav(listOfFav, favManga)) {
+                                ref
+                                    .read(FavouritesProvider.notifier)
+                                    .removeFromFav(favManga);
+                                setState(() {
+                                  isFav = false;
+                                  print("IS FAV here ===> $isFav");
+                                });
+                              } else {
+                                ref
+                                    .read(FavouritesProvider.notifier)
+                                    .addToFav(favManga);
+                                setState(() {
+                                  isFav = true;
+                                  print("IS FAV here ===> $isFav");
+                                });
+                              }
+
+                              print('PRESSED');
+                            },
+                            icon: Icon(
+                              Icons.favorite,
+                              color: isFav ? Colors.red : Colors.white,
+                              size: 35,
+                            ))),
                   ],
                 ),
                 Container(
@@ -174,18 +224,17 @@ class _SingleMangaScreenState extends State<SingleMangaScreen> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     Text('Date of upload'),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: chaptersInfo!.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Text("Chapter ${chaptersInfo?[index][3]}"),
-                            Text("${chaptersInfo?[index][1]}")
-                          ],
-                        );
-                      },
-                    )
+                    // ListView.builder(
+                    //   itemCount: chaptersInfo!.length,
+                    //   itemBuilder: (context, index) {
+                    //     return Row(
+                    //       children: [
+                    //         Text("Chapter ${chaptersInfo?[index][3]}"),
+                    //         Text("${chaptersInfo?[index][1]}")
+                    //       ],
+                    //     );
+                    //   },
+                    // )
                   ],
                 )
               ],
