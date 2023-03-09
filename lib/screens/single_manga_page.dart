@@ -8,25 +8,6 @@ import 'package:manga_padho/service/fetch_manga.dart';
 import 'package:manga_padho/service/notifiers/favourites_notifier.dart';
 import 'package:manga_padho/utils/constants.dart';
 
-// class SingleMangaScreen extends ConsumerStatefulWidget {
-//   const SingleMangaScreen({
-//     Key? key,
-//     required this.mangaID,
-//     required this.coverFileName,
-//     this.mangaDetails,
-//   }) : super(key: key);
-//   final String mangaID;
-//   final String coverFileName;
-//   final SingleMangaModel? mangaDetails;
-
-//   @override
-//   ConsumerState createState() => _SingleMangaScreenState();
-// }
-
-// class _SingleMangaScreenState extends ConsumerState {
-
-// }
-
 class SingleMangaScreen extends ConsumerStatefulWidget {
   const SingleMangaScreen({
     Key? key,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
+import 'package:manga_padho/screens/single_manga_page.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
 
 class FavouritesPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class FavouritesPage extends StatefulWidget {
 
 class _FavouritesPageState extends State<FavouritesPage> {
   // final favouritesName = Hive.box('mangaName');
-  final favourite = Hive.box('favourites');
+  final favourites = Hive.box('favourites');
   final FetchManga manga_service = new FetchManga();
   // late SingleMangaModel mangaDetails;
   // final FetchManga mangaService = FetchManga();
@@ -20,7 +21,15 @@ class _FavouritesPageState extends State<FavouritesPage> {
 
   @override
   void initState() {
+    trymap();
+
     super.initState();
+  }
+
+  void trymap() {
+    Iterable mangaKeys = favourites.keys;
+    Map currentFav = favourites.get('801513ba-a712-498c-8f57-cae55b38cc92');
+    print("The favourites are ===> ${mangaKeys.toList()}");
   }
 
   @override
@@ -29,24 +38,26 @@ class _FavouritesPageState extends State<FavouritesPage> {
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: favourite.isNotEmpty
+        child: favourites.isNotEmpty
             ? ListView.builder(
-                itemCount: favourite.length,
+                itemCount: favourites.keys.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final fav = favourite.get(index);
-                  print("THE FAV MANGA ID:==> ${fav[0]}");
+                  var mangaKeys = favourites.keys.toList();
+                  Map currentFav = favourites.get('${mangaKeys[index]}');
 
                   return ListTile(
+                    visualDensity: VisualDensity(vertical: 4),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
                     leading: Container(
                       height: 150,
-                      width: 80,
+                      width: 150,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
                               'https://uploads.mangadex.org/covers/'
-                                      '${fav[0]}/' +
-                                  '${fav[1]}'),
+                                      '${currentFav['mangaID']}/' +
+                                  '${currentFav['coverFileName']}'),
                         ),
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(15),
@@ -55,23 +66,23 @@ class _FavouritesPageState extends State<FavouritesPage> {
                     title: GestureDetector(
                       //TAPPING HERE WILL LEAD TO THE PAGE OF THIS MANGA
 
-                      // onTap: () async {
-                      //   SingleMangaModel? mangaDetails = await manga_service
-                      //       .getSingleMangaDetails(CoverUrls[index][1]);
-                      //   ;
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => SingleMangaScreen(
-                      //         mangaID: CoverUrls[index][1],
-                      //         coverFileName: CoverUrls[index][0],
-                      //         mangaDetails: mangaDetails,
-                      //       ),
-                      //     ),
-                      //   );
-                      // },
+                      onTap: () async {
+                        SingleMangaModel? mangaDetails = await manga_service
+                            .getSingleMangaDetails(mangaKeys[index]);
+                        ;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SingleMangaScreen(
+                              mangaID: currentFav['mangaID'],
+                              coverFileName: currentFav['coverFileName'],
+                              mangaDetails: mangaDetails,
+                            ),
+                          ),
+                        );
+                      },
                       child: Text(
-                        fav[2] ?? "loading",
+                        currentFav['mangaName'] ?? "loading",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -79,16 +90,16 @@ class _FavouritesPageState extends State<FavouritesPage> {
                     trailing: IconButton(
                         onPressed: () {
                           // favouritesName.clear();
-                          favourite.length <= 1
-                              ? favourite.clear()
-                              : favourite.deleteAt(index);
+                          favourites.length <= 1
+                              ? favourites.clear()
+                              : favourites.delete(mangaKeys[index]);
                           setState(() {});
                         },
                         icon: Icon(Icons.delete)),
                   );
                 },
               )
-            : Center(
+            : const Center(
                 child: Text(
                   'No Favourite Manga Added',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
