@@ -3,7 +3,7 @@ import 'package:manga_padho/model/searched_manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/screens/single_manga_page.dart';
 
-import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/service/api/fetch_manga.dart';
 import 'package:manga_padho/utils/colors.dart';
 import 'package:manga_padho/utils/constants.dart';
 

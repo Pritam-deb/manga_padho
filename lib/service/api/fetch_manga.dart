@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:manga_padho/model/chapter_model.dart';
+import 'package:manga_padho/model/base_urls_models/baseUrl_model.dart';
+import 'package:manga_padho/model/chapter_models/chapter_model.dart';
 import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_list_model.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
@@ -27,9 +29,7 @@ class FetchManga {
     );
   }
 
-  Future<List<List<String>>> fetchChapterList(String mangaID) async {
-    List<List<String>> chapters = [];
-
+  Future<ChapterModel> fetchChapterList(String mangaID) async {
     var response = await http.get(
       Uri.http(MixedConstants.BASE_URL, '/manga/$mangaID/feed', {
         'limit': 40.toString(),
@@ -39,20 +39,8 @@ class FetchManga {
       }),
     );
     chapterList = ChapterModel.fromJson(jsonDecode(response.body.toString()));
-    chapterList.data?.forEach(
-      (element) {
-        String chapterID = element.id!;
-        String title = element.attributes!.title!;
-        String volume = element.attributes!.volume!;
-        String chapter = element.attributes!.chapter!;
-        List<String> array = [chapterID, title, volume, chapter];
-        chapters.add(array);
-      },
-    );
-    chapters.add([chapterList.total.toString()]);
-    // print('The chapters are====> ${chapterList.total}');
 
-    return chapters;
+    return chapterList;
   }
 
   //get a list of covers of random manga
@@ -156,5 +144,12 @@ class FetchManga {
         SearchedMangaModel.fromJson(jsonDecode(response.body.toString()));
     print('The manga received is===>${searchedManga.data![0].id}');
     return searchedManga;
+  }
+
+  Future<BaseUrlModel> getBaseUrls(String chapterID) async {
+    var response = await http
+        .get(Uri.parse('https://api.mangadex.org/at-home/server/$chapterID'));
+
+    return BaseUrlModel.fromJson(jsonDecode(response.body));
   }
 }

@@ -11,7 +11,7 @@ import 'package:manga_padho/model/cover_model.dart';
 import 'package:manga_padho/model/manga_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/screens/single_manga_page.dart';
-import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/service/api/fetch_manga.dart';
 
 class HorizontalScrollList extends StatefulWidget {
   const HorizontalScrollList(

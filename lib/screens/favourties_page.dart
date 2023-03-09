@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/screens/single_manga_page.dart';
-import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/service/api/fetch_manga.dart';
 import 'package:manga_padho/utils/constants.dart';
 
 class FavouritesPage extends StatefulWidget {
@@ -29,7 +29,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
 
   void trymap() {
     Iterable mangaKeys = favourites.keys;
-    Map currentFav = favourites.get('801513ba-a712-498c-8f57-cae55b38cc92');
+    // Map currentFav = favourites.get('801513ba-a712-498c-8f57-cae55b38cc92');
     print("The favourites are ===> ${mangaKeys.toList()}");
   }
 

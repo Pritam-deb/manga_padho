@@ -2,11 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:manga_padho/model/chapter_models/chapter_model.dart';
 import 'package:manga_padho/model/fav_model.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
-import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/screens/reader_page.dart';
+import 'package:manga_padho/service/api/fetch_manga.dart';
 import 'package:manga_padho/service/notifiers/favourites_notifier.dart';
+import 'package:manga_padho/service/notifiers/page_url_notifier.dart';
 import 'package:manga_padho/utils/constants.dart';
+import 'package:mangadex_library/mangadex_library.dart' as lib;
 
 class SingleMangaScreen extends ConsumerStatefulWidget {
   const SingleMangaScreen({
@@ -32,15 +36,19 @@ class _SingleMangaScreenState extends ConsumerState<SingleMangaScreen> {
   final favourites = Hive.box('favourites');
 
   final FetchManga mangaService = FetchManga();
+  final ScrollController _scrollController = ScrollController();
+
   String? mangaName = '',
       mangaAuthor = '',
       mangaArtist = '',
       mangaState = '',
       mangaDesc = '';
   bool isFav = false;
-
+  FutureProvider<ChapterModel>? chaptersProvider;
   @override
   void initState() {
+    chaptersProvider = FutureProvider(
+        (ref) async => await FetchManga().fetchChapterList(widget.mangaID));
     fetchDetails();
     isFav = favourites.get(widget.mangaID) == null ? false : true;
     print('TEMP GOT== $mangaName');
@@ -65,6 +73,10 @@ class _SingleMangaScreenState extends ConsumerState<SingleMangaScreen> {
     return FavouriteNotifier();
   });
 
+  final UrlProvider = NotifierProvider<PageUrlNotifier, List<String>>(() {
+    return PageUrlNotifier();
+  });
+
   bool checkFav(List<FavModel> listFav, FavModel favourite) {
     bool isPresent = false;
     for (final model in listFav) {
@@ -80,150 +92,168 @@ class _SingleMangaScreenState extends ConsumerState<SingleMangaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              mangaName ?? 'Loading',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Mangainfo(
-                      mangaInformation: mangaAuthor,
-                      placeholderText: 'Author',
-                    ),
-                    Mangainfo(
-                      mangaInformation: mangaArtist,
-                      placeholderText: 'Artist',
-                    ),
-                    Mangainfo(
-                      mangaInformation: mangaState,
-                      placeholderText: 'State',
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                mangaName ?? 'Loading',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Mangainfo(
+                        mangaInformation: mangaAuthor,
+                        placeholderText: 'Author',
+                      ),
+                      Mangainfo(
+                        mangaInformation: mangaArtist,
+                        placeholderText: 'Artist',
+                      ),
+                      Mangainfo(
+                        mangaInformation: mangaState,
+                        placeholderText: 'State',
+                      ),
 
-                    // Mangainfo(mangaInformation: mangaRating, placeholderText: 'Rating',),
+                      // Mangainfo(mangaInformation: mangaRating, placeholderText: 'Rating',),
 
-                    Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: IconButton(
-                            onPressed: () {
-                              FavModel favManga = FavModel(
-                                  mangaID: widget.mangaID,
-                                  coverFileName: widget.coverFileName,
-                                  mangaName: mangaName!);
-                              var listOfFav = ref.watch(FavouritesProvider);
-                              if (checkFav(listOfFav, favManga)) {
-                                ref
-                                    .read(FavouritesProvider.notifier)
-                                    .removeFromFav(favManga);
-                                setState(() {
-                                  isFav = false;
-                                  print("IS FAV here ===> $isFav");
-                                });
-                              } else {
-                                ref
-                                    .read(FavouritesProvider.notifier)
-                                    .addToFav(favManga);
-                                setState(() {
-                                  isFav = true;
-                                  print("IS FAV here ===> $isFav");
-                                });
-                              }
+                      Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              color: Colors.purple,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: IconButton(
+                              onPressed: () {
+                                FavModel favManga = FavModel(
+                                    mangaID: widget.mangaID,
+                                    coverFileName: widget.coverFileName,
+                                    mangaName: mangaName!);
+                                var listOfFav = ref.watch(FavouritesProvider);
+                                if (checkFav(listOfFav, favManga)) {
+                                  ref
+                                      .read(FavouritesProvider.notifier)
+                                      .removeFromFav(favManga);
+                                  setState(() {
+                                    isFav = false;
+                                    print("IS FAV here ===> $isFav");
+                                  });
+                                } else {
+                                  ref
+                                      .read(FavouritesProvider.notifier)
+                                      .addToFav(favManga);
+                                  setState(() {
+                                    isFav = true;
+                                    print("IS FAV here ===> $isFav");
+                                  });
+                                }
 
-                              print('PRESSED');
-                            },
-                            icon: Icon(
-                              Icons.favorite,
-                              color: isFav ? Colors.red : Colors.white,
-                              size: 35,
-                            ))),
-                  ],
-                ),
-                Container(
-                  height: 160,
-                  width: 140,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          '${MixedConstants.COVER_URL}${widget.mangaID}/${widget.coverFileName}'),
-                    ),
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(15),
+                                print('PRESSED');
+                              },
+                              icon: Icon(
+                                Icons.favorite,
+                                color: isFav ? Colors.red : Colors.white,
+                                size: 35,
+                              ))),
+                    ],
                   ),
-                )
-              ],
-            ),
-            Text('Description'),
-            TextButton(
-              onPressed: () {},
-              child: Container(
-                height: 70,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                  child: Text(
-                    'Start reading from ch. 1',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  Container(
+                    height: 160,
+                    width: 140,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                            '${MixedConstants.COVER_URL}${widget.mangaID}/${widget.coverFileName}'),
+                      ),
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  )
+                ],
+              ),
+              Text('Description'),
+              TextButton(
+                onPressed: () {},
+                child: Container(
+                  height: 70,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: Text(
+                      'Start reading from ch. 1',
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              chaptersInfo != null
-                  ? 'Number of chapters are ${totalChapters}'
-                  : 'null',
-              style: TextStyle(color: Colors.black, fontSize: 24),
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Ch. 1',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    Text('Date of upload'),
-                    // ListView.builder(
-                    //   itemCount: chaptersInfo!.length,
-                    //   itemBuilder: (context, index) {
-                    //     return Row(
-                    //       children: [
-                    //         Text("Chapter ${chaptersInfo?[index][3]}"),
-                    //         Text("${chaptersInfo?[index][1]}")
-                    //       ],
-                    //     );
-                    //   },
-                    // )
-                  ],
-                )
-              ],
-            )
-          ],
+              SizedBox(
+                height: 15,
+              ),
+              Consumer(builder: (context, ref, child) {
+                return ref.watch(chaptersProvider!).when(
+                      data: (data) => Text(
+                        data.total != null
+                            ? 'Number of chapters are ${data.total}'
+                            : 'null',
+                        style: TextStyle(color: Colors.black, fontSize: 24),
+                      ),
+                      error: (Object error, StackTrace stackTrace) {
+                        return Container();
+                      },
+                      loading: () {
+                        return Container();
+                      },
+                    );
+              }),
+              Consumer(builder: (context, ref, child) {
+                return ref.watch(chaptersProvider!).when(
+                    data: (chaptersList) => ListView.builder(
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          itemCount: chaptersList.data!.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReaderScreen(
+                                        chaptersList.data![index].id!),
+                                  ),
+                                );
+                              },
+                              title: Text(
+                                  "${chaptersList.data?[index].attributes?.title}"),
+                              subtitle: Text(
+                                  "Chapter ${chaptersList.data?[index].attributes?.chapter}"),
+                            );
+                          },
+                        ),
+                    error: (e, a) => Text('Error fetching title'),
+                    loading: () => CircularProgressIndicator());
+              })
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
 
