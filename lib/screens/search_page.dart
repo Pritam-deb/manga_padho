@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manga_padho/model/searched_manga_model.dart';
+import 'package:manga_padho/model/single_manga_model.dart';
+import 'package:manga_padho/screens/single_manga_page.dart';
 
 import 'package:manga_padho/service/fetch_manga.dart';
 import 'package:manga_padho/utils/colors.dart';
@@ -101,25 +103,42 @@ class _SearchPageState extends State<SearchPage> {
           isShowSearch == false
               ? Column(
                   children: [
-                    UnconstrainedBox(
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                '${MixedConstants.COVER_URL}$mangaID/$coverFile'),
+                    GestureDetector(
+                      onTap: () async {
+                        SingleMangaModel? mangaDetails =
+                            await manga_service.getSingleMangaDetails(mangaID!);
+                        ;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SingleMangaScreen(
+                              mangaID: mangaID!,
+                              coverFileName: coverFile!,
+                              mangaDetails: mangaDetails,
+                            ),
                           ),
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 10),
-                              blurRadius: 33,
-                              color: Colors.grey,
-                            )
-                          ],
+                        );
+                      },
+                      child: UnconstrainedBox(
+                        child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  '${MixedConstants.COVER_URL}$mangaID/$coverFile'),
+                            ),
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(0, 10),
+                                blurRadius: 33,
+                                color: Colors.grey,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

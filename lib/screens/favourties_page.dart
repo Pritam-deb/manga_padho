@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:manga_padho/model/single_manga_model.dart';
 import 'package:manga_padho/screens/single_manga_page.dart';
 import 'package:manga_padho/service/fetch_manga.dart';
+import 'package:manga_padho/utils/constants.dart';
 
 class FavouritesPage extends StatefulWidget {
   const FavouritesPage({super.key});
@@ -55,8 +56,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: NetworkImage(
-                              'https://uploads.mangadex.org/covers/'
-                                      '${currentFav['mangaID']}/' +
+                              '${MixedConstants.COVER_URL}${currentFav['mangaID']}/' +
                                   '${currentFav['coverFileName']}'),
                         ),
                         color: Colors.grey,
