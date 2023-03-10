@@ -77,8 +77,15 @@ class _SearchPageState extends State<SearchPage> {
                     searchedManga = await manga_service
                         .searchManga(_searchController.text.trim());
                     mangaID = searchedManga.data![0].id;
-                    coverFile = searchedManga
-                        .data![0].relationships![2].attributes?.fileName;
+                    // String? fileName;
+                    //for the cover name
+                    var relations = searchedManga.data![0].relationships;
+                    relations?.forEach((element) {
+                      if (element.type == 'cover_art') {
+                        coverFile = element.attributes?.fileName;
+                      }
+                    });
+
                     mangaName =
                         searchedManga.data![0].attributes!.title!.en.toString();
                     print('FIND IT $mangaID and $coverFile');

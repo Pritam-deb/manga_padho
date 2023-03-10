@@ -62,6 +62,8 @@ class _SingleMangaScreenState extends ConsumerState<SingleMangaScreen> {
     // chaptersInfo = await mangaService.fetchChapterList(widget.mangaID);
     totalChapters = chaptersInfo?.last[0];
     // chaptersInfo = chaptersInfo.removeLast();
+    print(
+        'Name: $mangaName Author: ${widget.mangaDetails?.data!.relationships![0].attributes} ');
     setState(() {
       chaptersInfo;
       // totalChapters;
@@ -261,16 +263,16 @@ class Mangainfo extends StatelessWidget {
   const Mangainfo({
     super.key,
     required this.mangaInformation,
-    this.placeholderText,
+    required this.placeholderText,
   });
 
   final String? mangaInformation;
-  final String? placeholderText;
+  final String placeholderText;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      mangaInformation ?? 'Author',
+      mangaInformation ?? placeholderText,
       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
     );
   }
