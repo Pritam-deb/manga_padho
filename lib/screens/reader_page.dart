@@ -35,14 +35,21 @@ class _ReaderScreenState extends ConsumerState<ReaderScreen> {
         return ref.watch(UrlListProvider!).when(
             data: (url) {
               var urlList = ref.watch(UrlProvider);
-              return Center(
-                child: CachedNetworkImage(
-                    imageUrl: urlList[0],
-                    placeholder: (a, e) => Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.red,
-                        ))),
-              );
+
+              return PageView.builder(
+                  itemCount: urlList.length,
+                  pageSnapping: true,
+                  itemBuilder: (context, pagePosition) {
+                    return Container(
+                      margin: EdgeInsets.all(10),
+                      child: CachedNetworkImage(
+                          imageUrl: urlList[pagePosition],
+                          placeholder: (a, e) => Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.red,
+                              ))),
+                    );
+                  });
             },
             error: (e, a) => Container(),
             loading: () => Center(child: CircularProgressIndicator()));
